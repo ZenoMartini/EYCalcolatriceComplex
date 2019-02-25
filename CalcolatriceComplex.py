@@ -691,7 +691,7 @@ for i in range(-nx, nx):
     grix = canv.create_line(i * stepx + Xv0, 0, i * stepx + Xv0, AltTela, fill="lightgrey")
 
 for i in range(-ny, ny):
-    griyy = canv.create_line(0, Yv0 + i * stepy, LargTela, Yv0 + i * stepy, fill="lightgrey")
+    griy = canv.create_line(0, Yv0 + i * stepy, LargTela, Yv0 + i * stepy, fill="lightgrey")
 
 assex = canv.create_line(Xv0, 0, Xv0, AltTela, fill="grey")
 assey = canv.create_line(0, Yv0, LargTela, Yv0, fill="grey")
