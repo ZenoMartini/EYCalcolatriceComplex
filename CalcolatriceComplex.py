@@ -31,8 +31,7 @@ def SottrazioneZ1Z2():
     except ValueError:
         Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata del numero')
-
-#dividi Z1 con Z2
+#addiziona le Z spuntate
 def addizione():
     a=0
     c=complex(a)
@@ -44,7 +43,7 @@ def addizione():
             except ValueError:
                 pass
     Risultato(c, Zr, Mr, Fr)
-
+#moltiplica le Z spuntate
 def moltiplicazione():
     a = 1
     c = complex(a)
@@ -61,6 +60,7 @@ def sottrazione():
     pass
 def divisione():
     pass
+#divide Z1 con Z2
 def DivisioneZ1Z2():
     try:
         a=Z1.get()
@@ -77,7 +77,7 @@ def DivisioneZ1Z2():
     except ValueError:
         Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata del numero')
-#calcola il parallelo tra Z1 e Z2
+#calcola il parallelo di n Z
 
 def ZParalleli(n,Impedenze):
     y=0
@@ -108,7 +108,7 @@ def ZParalleli(n,Impedenze):
         except ZeroDivisionError:
             Zr.delete(0, END)
             Zr.insert(0, "infinito")
-
+#individua la Z da mettere in parallelo
 def Paralleli():
     zp=[]
     i=0
@@ -131,7 +131,7 @@ def Paralleli():
         Messaggi.delete(0, END)
         Messaggi.insert(0, "Occorre selezionare almeno due Z")
 
-#trasforma in coordinare cartesiane
+#Individua le Z spuntate
 def PtoRs():
     if z1var.get():
         PtoR(M1, F1, Z1)
@@ -141,6 +141,7 @@ def PtoRs():
         PtoR(M3, F3, Z3)
     if z4var.get():
         PtoR(M4, F4, Z4)
+#trasforma in coordinare cartesiane la forma polare di Z
 
 def PtoR(M,F,Z):
     try:
@@ -152,7 +153,7 @@ def PtoR(M,F,Z):
         Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata del numero')
 
-#trasforma in coordinate polari Z
+#individua le Z spuntate
 def RtoPs():
     if z1var.get():
         RtoP(Z1, M1, F1)
@@ -162,6 +163,7 @@ def RtoPs():
         RtoP(Z3, M3, F3)
     if z4var.get():
         RtoP(Z4, M4, F4)
+#trasforma in coordinare polari la forma cartesiana  di Z
 
 def RtoP(Z, M, F):
     try:
@@ -314,7 +316,8 @@ def SetZ():
     Z3.insert(0, "-2+4j")
     Z4.delete(0, END)
     Z4.insert(0, "-4-3j")
-
+#trasforma le prime tre Z considerate rami di una stella in lati del triangolo equivalente
+#e memorizza i rami della stella
 def YtoD():
     try:
         a=complex(Z1.get())
@@ -338,7 +341,8 @@ def YtoD():
     except ValueError:
         Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata di qualche impedenza')
-
+#trasforma le prime tre Z considerate lati di un triangolo i rami della stella equivalente
+#e memorizza i lati del triangolo
 def DtoY():
     try:
         a = complex(Z1.get())
@@ -362,6 +366,10 @@ def DtoY():
     except ValueError:
         Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata di qualche impedenza')
+#Z1,Z2,3 sono i valori della stella squilibrata
+#in Z4 va inserito il valore della tensione concatenata del sistema simmetrico di alimentazione
+#In Zr viene posto il valore dello spostamento rispetto al centro stella ideale del sistema
+#quest'ultimo corrispondente allo zero.
 def SpostamentoCentroStella():
    try:
         a = complex(Z1.get())
@@ -378,7 +386,11 @@ def SpostamentoCentroStella():
    except ValueError:
        Messaggi.delete(0, END)
        Messaggi.insert(0, "C'è almeno una scrittura errata nei dati")
-
+#Scompone la terna quilibrata Z1,Z2,Z3 nelle terne diretta, inversa, omopolare
+#La terna squilibrata viene memorizzata nelle Mem
+#In Z1 c'è il valore del primo vettore della terna diretta
+#In Z2 quello del primo valore della terna inversa
+#In Z3 il valore della terna omopolare
 def Sequenze():
     try:
         a = complex(Z1.get())
@@ -400,7 +412,7 @@ def Sequenze():
     except ValueError:
         Messaggi.delete(0, END)
         Messaggi.insert(0, "C'è almeno una scrittura errata nei dati")
-
+#rappresenta con dei punti nel piano complesso Z1,Z2,Z3,Z4,Zr
 def DisegnaGrafici():
     # coordinate relative grafico
 
@@ -433,7 +445,7 @@ def DisegnaGrafici():
         for i in range(len(PZn)):
             cz = canv.create_oval(PZn[i][0] + r, PZn[i][1] - r, PZn[i][0] - r, PZn[i][1] + r, fill=Zcolor[i])
             Pdisegnati.append(cz)
-        um=canv.create_text(25,40,text="1:"+str(round(s,1 )))
+        um=canv.create_text(25,40,text="1:"+str(round(s,2 )))
         Pdisegnati.append(um)
         del PZn[:]
 
@@ -441,7 +453,7 @@ def DisegnaGrafici():
         Impedenze[i].delete(0,END)
         Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata Z'+str(i+1))
-
+#elimina tutti gli elementi del disegno
 def CancellaGrafici():
     #print(len(Pdisegnati))
     for i in range(len(Pdisegnati)):
