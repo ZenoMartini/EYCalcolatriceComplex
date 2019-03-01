@@ -5,6 +5,9 @@ from tkinter import *
 from tkinter import ttk
 
 #Inserisce risultato operazioni tra Z1 e Z2 in Z3
+from typing import Any, Union
+
+
 def Risultato(c, Z, M, F):
     #tiene 3 cifre significative della parte reale e di quella immaginaria
     #'%s': ciò che segue % (operatore di formato) sarà una stringa
@@ -84,7 +87,7 @@ def ZParalleli(n,Impedenze):
     for i in range(n):
         try:
             x=complex(Impedenze[i].get())
-            print("Zparalleli",x)
+            #print("Zparalleli",x)
             if x==0:
                 Zr.delete(0, END)
                 Zr.insert(0, '0')
@@ -112,20 +115,37 @@ def ZParalleli(n,Impedenze):
 def Paralleli():
     zp=[]
     i=0
+    pr=0
     if z1var.get():
-        zp.append(Z1)
-        i=i+1
+        if complex(Z1.get()).real < 0:
+            pr=pr+1
+        else:
+            zp.append(Z1)
+            i=i+1
     if z2var.get():
-        zp.append(Z2)
-        i = i + 1
+        if complex(Z2.get()).real < 0:
+            pr=pr+1
+        else:
+            zp.append(Z2)
+            i = i + 1
     if z3var.get():
-        zp.append(Z3)
-        i = i + 1
+        if complex(Z3.get()).real < 0:
+            pr=pr+1
+        else:
+            zp.append(Z3)
+            i = i + 1
     if z4var.get():
-        zp.append(Z4)
-        i = i + 1
+        if complex(Z4.get()).real < 0:
+            pr=pr+1
+        else:
+            zp.append(Z4)
+            i = i + 1
     if i>1:
-        ZParalleli(i,zp)
+        if pr == 0:
+            ZParalleli(i,zp)
+        else:
+            Messaggi.delete(0, END)
+            Messaggi.insert(0, str(pr)+" Z con parte reale negativa")
         del zp[:]
     else:
         Messaggi.delete(0, END)
@@ -179,14 +199,14 @@ def RtoP(Z, M, F):
         Messaggi.insert(0, 'Scrittura errata del numero')
 
 #copia Zr in una delle Z
-def ZrtoZ(Z,M,F,Mem):
-    if z4var.get():
-        Memoria(Z, M, F, Mem)
-        Z.delete(0,END)
-        Z.insert(0,Zr.get())
-    else:
-        Messaggi.delete(0, END)
-        Messaggi.insert(0, 'Z4 non è selezionata')
+#def ZrtoZ(Z,M,F,Mem):
+    #if z4var.get():
+        #Memoria(Z, M, F, Mem)
+        #Z.delete(0,END)
+        #Z.insert(0,Zr.get())
+    #else:
+        #Messaggi.delete(0, END)
+        #Messaggi.insert(0, 'Z4 non è selezionata')
 
 def ScambioZSpuntate():
     if z1var.get():
@@ -196,6 +216,11 @@ def ScambioZSpuntate():
                 ScambioZ(Z2, Z3, M2, F2, M3, F3)
                 if z4var.get():
                     ScambioZ(Z3, Z4, M3, F3, M4, F4)
+                    if z5var.get():
+                        ScambioZ(Z4, Zr, M4, F4, Mr, Fr)
+                else:
+                    if z5var.get():
+                        ScambioZ(Z3, Zr, M3, F3, Mr, Fr)
             else:
                 if z4var.get():
                     ScambioZ(Z1, Z4, M1, F1, M4, F4)
@@ -204,23 +229,46 @@ def ScambioZSpuntate():
                 ScambioZ(Z1, Z3, M1, F1, M3, F3)
                 if z4var.get():
                     ScambioZ(Z3, Z4, M3, F3, M4, F4)
+                    if z5var.get():
+                        ScambioZ(Zr, Z4, Mr, Fr, M4, F4)
             else:
                 if z4var.get():
                     ScambioZ(Z1, Z4, M1, F1, M4, F4)
+                    if z5var.get():
+                        ScambioZ(Z4, Zr, M4, F4, Mr, Fr)
+                else:
+                    if z5var.get():
+                        ScambioZ(Z1, Zr, M1, F1, Mr, Fr)
+
     else:
         if z2var.get():
             if z3var.get():
                 ScambioZ(Z2, Z3, M2, F2, M3, F3)
                 if z4var.get():
                     ScambioZ(Z3, Z4, M3, F3, M4, F4)
+                    if z5var.get():
+                        ScambioZ(Z4, Zr, M4, F4, Mr, Fr)
             else:
                 if z4var.get():
                     ScambioZ(Z2, Z4, M2, F2, M4, F4)
+                    if z5var.get():
+                        ScambioZ(Z4, Zr, M4, F4, Mr, Fr)
+                else:
+                    if z5var.get():
+                        ScambioZ(Z2, Zr, M2, F2, M3, F3)
         else:
             if z3var.get():
                 if z4var.get():
                     ScambioZ(Z3, Z4, M3, F3, M4, F4)
-
+                    if z5var.get():
+                        ScambioZ(Z4, Zr, M4, F4, Mr, Fr)
+                else:
+                    if z5var.get():
+                        ScambioZ(Z3, Zr, M3, F3, Mr, Fr)
+            else:
+                if z4var.get():
+                    if z5var.get():
+                        ScambioZ(Z4, Zr, M4, F4, Mr, Fr)
 
 #scambia tra due Z
 def ScambioZ(Z1,Z2,M1,F1,M2,F2):
@@ -236,6 +284,9 @@ def ScambioZ(Z1,Z2,M1,F1,M2,F2):
         RtoP(Z1,M1,F1)
     if len(Z2.get()) !=0:
         RtoP(Z2,M2,F2)
+    CancellaGrafici()
+    DisegnaGrafici()
+
 def MemZs():
     if z1var.get():
         Memoria(Z1, M1, F1, Mem1)
@@ -245,6 +296,8 @@ def MemZs():
         Memoria(Z3, M3, F3, Mem3)
     if z4var.get():
         Memoria(Z4, M4, F4, Mem4)
+    CancellaGrafici()
+    DisegnaGrafici()
 
 
 def Memoria(Z,M,F,Mem):
@@ -283,6 +336,22 @@ def invZ(Z, M, F):
     except ValueError:
         #Messaggi.delete(0, END)
         Messaggi.insert(0, 'Scrittura errata Z')
+def MemDivisoZ():
+    if z1var.get():
+        a=complex(Mem1.get())/complex(Z1.get())
+        Risultato(a, Z1, M1, F1)
+    if z2var.get():
+        a = complex(Mem2.get()) / complex(Z2.get())
+        Risultato(a, Z2, M2, F2)
+    if z3var.get():
+        a = complex(Mem3.get()) / complex(Z3.get())
+        Risultato(a, Z3, M3, F3)
+    if z4var.get():
+        a = complex(Mem4.get()) / complex(Z4.get())
+        Risultato(a, Z4, M4, F4)
+
+
+
 def PiuMenoZs():
     if z1var.get():
         PiuMeno(Z1, M1, F1)
@@ -309,13 +378,14 @@ def ResetBottone():
 def SetZ():
     ResetBottone()
     Z1.delete(0, END)
-    Z1.insert(0, "3+4j")
+    Z1.insert(0, "10+8j")
     Z2.delete(0, END)
-    Z2.insert(0, "-3+3j")
+    Z2.insert(0, "-16j")
     Z3.delete(0, END)
-    Z3.insert(0, "-2+4j")
+    Z3.insert(0, "18-8j")
     Z4.delete(0, END)
-    Z4.insert(0, "-4-3j")
+    Z4.insert(0, "400")
+
 #trasforma le prime tre Z considerate rami di una stella in lati del triangolo equivalente
 #e memorizza i rami della stella
 def YtoD():
@@ -373,7 +443,7 @@ def DtoY():
 def SpostamentoCentroStella():
    try:
         a = complex(Z1.get())
-        b = complex(Z2.get())
+        b: complex = complex(Z2.get())
         c = complex(Z3.get())
         d=complex(Z4.get())/math.sqrt(3)
         #print(a,b,c,d)
@@ -381,8 +451,25 @@ def SpostamentoCentroStella():
             Messaggi.delete(0, END)
             Messaggi.insert(0, 'Spostamento infinito o indefinito')
         else:
-            V = d*(1 / a + f2 / b + f3 / c) / ( 1 / a + 1 / b + 1 / c)
+            V: Union[complex, Any] = d*(1 / a + f2 / b + f3 / c) / ( 1 / a + 1 / b + 1 / c)
             Risultato(V, Zr, Mr, Fr)
+            E1=d-V
+            E2=d*f2-V
+            E3=d*f3-V
+            I1=E1/a
+            I2=E2/b
+            I3=E3/c
+            Risultato(I1, Z1, M1, F1)
+            Risultato(I2, Z2, M2, F2)
+            Risultato(I3, Z3, M3, F3)
+            Memoria(Z1, M1, F1, Mem1)
+            Memoria(Z2, M2, F2, Mem2)
+            Memoria(Z3, M3, F3, Mem3)
+            Risultato(E1, Z1, M1, F1)
+            Risultato(E2, Z2, M2, F2)
+            Risultato(E3, Z3, M3, F3)
+
+
    except ValueError:
        Messaggi.delete(0, END)
        Messaggi.insert(0, "C'è almeno una scrittura errata nei dati")
@@ -413,52 +500,81 @@ def Sequenze():
         Messaggi.delete(0, END)
         Messaggi.insert(0, "C'è almeno una scrittura errata nei dati")
 #rappresenta con dei punti nel piano complesso Z1,Z2,Z3,Z4,Zr
-def DisegnaGrafici():
+def DisegnaGrafici() -> object:
+    Messaggi.delete(0, END)
     # coordinate relative grafico
+    zs = []
 
+    for i in range(len(Impedenze)):
+        if zvar[i].get():
+            zs.append(i)
     try:
-        zi = []
-        for i in range(len(Impedenze)):
-            c = cmath.polar(complex(Impedenze[i].get()))
+        zi=[]
+        for i in range(len(zs)):
+            print("A:", zs[i])
+            c = cmath.polar(complex(Impedenze[zs[i]].get()))
             zi.append(c)
 
-        L= max(zi[0][0],zi[1][0],zi[2][0],zi[3][0],zi[4][0])
-
-        del zi[:]
-
-        xmin = -L
-        xmax = L
-        ymin = -L
-        ymax = L
-
-        k1=LargTela/(xmax-xmin) # calcolo costanti di conversione
-        k2=AltTela/(ymax-ymin)
-        s=L/5 #scala
-
-        PZn=[]
-        for i in range(len(Impedenze)):
-            PZ = (k1 * complex(Impedenze[i].get()).real + Xv0, Yv0 - k2 * complex(Impedenze[i].get()).imag)
-            PZn.append(PZ)
-
-        r=4
-
-        for i in range(len(PZn)):
-            cz = canv.create_oval(PZn[i][0] + r, PZn[i][1] - r, PZn[i][0] - r, PZn[i][1] + r, fill=Zcolor[i])
-            Pdisegnati.append(cz)
-        um=canv.create_text(25,40,text="1:"+str(round(s,2 )))
-        Pdisegnati.append(um)
-        del PZn[:]
-
+        #L=zi[0][0] #primo elemento
+        L=0
+        pos=0
+        while pos < len(zi):
+            if zi[pos][0]>L:
+                L=zi[pos][0]
+            pos = pos+1
+        #L= max(zi[0][0],zi[1][0],zi[2][0],zi[3][0],zi[4][0])
+        #print('qui:',L)
+        if L>0:
+            del zi[:]
+            DaiDisegna(L,zs)
+        else:
+            Messaggi.delete(0, END)
+            Messaggi.insert(0, 'Impossibile disegnare')
     except ValueError:
-        Impedenze[i].delete(0,END)
+        # Impedenze[i].delete(0,END)
         Messaggi.delete(0, END)
-        Messaggi.insert(0, 'Scrittura errata Z'+str(i+1))
+        Messaggi.insert(0, 'Scrittura errata Z' + str(zs[i]+1))
+        #zvar[i].set(False)
+
+
+def DaiDisegna(L,zs):
+    xmin = -L
+    xmax = L
+    ymin = -L
+    ymax = L
+
+    k1=LargTela/(xmax-xmin) # calcolo costanti di conversione
+    k2=AltTela/(ymax-ymin)
+    s=L/5 #scala
+
+    PZn=[]
+
+    for i in range(len(zs)):
+        print("B:", zs[i])
+        PZ = (k1 * complex(Impedenze[zs[i]].get()).real + Xv0, Yv0 - k2 * complex(Impedenze[zs[i]].get()).imag)
+        PZn.append(PZ)
+
+    r=3
+
+    for i in range(len(PZn)):
+        #if zvar[i].get():
+        cz = canv.create_oval(PZn[i][0] + r, PZn[i][1] - r, PZn[i][0] - r, PZn[i][1] + r, fill=Zcolor[zs[i]])
+        lz = canv.create_line(Xv0,Yv0,PZn[i][0],PZn[i][1],fill=Zcolor[zs[i]],arrow=LAST)
+        Pdisegnati.append(cz)
+        Pdisegnati.append(lz)
+    um=canv.create_text(25,40,text="1:"+str(round(s,2 )))
+    Pdisegnati.append(um)
+    del PZn[:]
+    del zs[:]
+
+
 #elimina tutti gli elementi del disegno
 def CancellaGrafici():
     #print(len(Pdisegnati))
     for i in range(len(Pdisegnati)):
         canv.delete(Pdisegnati[i])
     del Pdisegnati[:]
+    Messaggi.delete(0, END)
 
 #costanti varie
 
@@ -515,7 +631,7 @@ canv = tk.Canvas(content1, highlightthickness=0, bg='white', width=LargTela, hei
 
 #definizioni etichette
 
-zrlbl=ttk.Label(content, text="Zr", foreground="red", font="Helvetica 20",justify=CENTER)
+#zrlbl=ttk.Label(content, text="Zr", foreground="red", font="Helvetica 20",justify=CENTER)
 
 cartesianalbl=ttk.Label(content, text="a+bj",font="Helvetica 16")
 Modulolbl=ttk.Label(content, text="Modulo",font="Helvetica 16")
@@ -585,27 +701,33 @@ PtoRZs = ttk.Button(content, text="P->R", style="my.TButton", command=PtoRs)
 
 RtoPZs = ttk.Button(content, text="R->P", style="my.TButton", command=RtoPs)
 
-ZrtoZ4 = ttk.Button(content, text="Zr->Z4", style="my.TButton", command=lambda:ZrtoZ(Z4, M4, F4, Mem4))
+#ZrtoZ4 = ttk.Button(content, text="Zr->Z4", style="my.TButton", command=lambda:ZrtoZ(Z4, M4, F4, Mem4))
 
 z1var=BooleanVar()
 z2var=BooleanVar()
 z3var=BooleanVar()
 z4var=BooleanVar()
+z5var=BooleanVar()
 
 z1 = ttk.Checkbutton(content, text="Z1", variable=z1var, onvalue=True)
 z2 = ttk.Checkbutton(content, text="Z2", variable=z2var, onvalue=True)
 z3 = ttk.Checkbutton(content, text="Z3", variable=z3var, onvalue=True)
 z4 = ttk.Checkbutton(content, text="Z4", variable=z4var, onvalue=True)
+z5 = ttk.Checkbutton(content, text="Zr", variable=z5var, onvalue=True)
+
 
 z1var.set(True)
 z2var.set(True)
 z3var.set(True)
 z4var.set(False)
-zvar=(z1var,z2var,z3var,z4var)
+z5var.set(True)
+zvar=(z1var,z2var,z3var,z4var,z5var)
 
 ScambioZS = ttk.Button(content, text="Scambio Z", style="my.TButton", command=ScambioZSpuntate)
 
 Zsinv = ttk.Button(content, text="1/Z", style="my.TButton", command=invZS)
+MsuZ= ttk.Button(content, text="M/Z", style="my.TButton", command=MemDivisoZ)
+
 
 ZsPiuMeno=ttk.Button(content, text="+/-", style="my.TButton", command=PiuMenoZs)
 
@@ -634,12 +756,14 @@ canv.grid(column=1, row=1, sticky=(E))
 cartesianalbl.grid(column=cz+2, row=0)
 Modulolbl.grid(column=cz+3, row=0)
 Faselbl.grid(column=cz+4, row=0)
-zrlbl.grid(column=cz+1,row=5)
+#zrlbl.grid(column=cz+1,row=5)
 
 z1.grid(column=cz+1, row=1)
 z2.grid(column=cz+1, row=2)
 z3.grid(column=cz+1, row=3)
 z4.grid(column=cz+1, row=4)
+z5.grid(column=cz+1, row=5)
+
 
 
 #posizionamente campi di ingresso
@@ -680,11 +804,14 @@ PtoRZs.grid(column=2, row=2)
 
 RtoPZs.grid(column=2, row=1)
 
-ZrtoZ4.grid(column=cz,row=rb-1, ipadx=5)
+#ZrtoZ4.grid(column=cz,row=rb-1, ipadx=5)
 
 ScambioZS.grid(column=cz, row=rb-4, ipadx=5)
 
 Zsinv.grid(column=cz, row=rb-3, ipadx=5)
+
+MsuZ.grid(column=cz-1, row=rb-3, ipadx=5)
+
 
 ZsPiuMeno.grid(column=cz, row=rb-5)
 
@@ -714,5 +841,6 @@ assey = canv.create_line(0, Yv0, LargTela, Yv0, fill="grey")
 Pdisegnati=[]
 
 root.mainloop()
+
 
 
